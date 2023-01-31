@@ -1,11 +1,13 @@
 import express from 'express'
 
-[[layers.import]]
+[[server.layers.import]]
 
 const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+[[server.routes.generate]]
 
 const PORT = process.env.PORT || [[PORT]]
 

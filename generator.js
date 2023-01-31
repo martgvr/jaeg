@@ -3,7 +3,7 @@ import { readFile, writeLine, clearFile } from './fileManage.js'
 clearFile()
 
 const config = {
-    PORT: 3001,
+    PORT: 8080,
     mode: 'cluster',
     layers: ['carts', 'products', 'users'],
 }
@@ -22,14 +22,32 @@ for (const line of fileContent) {
 
         for (let i = 0; i < varsToReplace.length; i++) {
             previousLine = i === 0 ? line : newLine
+
             for (const key in config) {
-                if (varsToReplace[i] === 'layers.import') {
-                    newLine = previousLine.replace('[[layers.import]]', '// Realizar aqui el script para importación de capas')
-                } else if (key === varsToReplace[i]) {
+
+                if (varsToReplace[i] === 'server.layers.import') {
+                    let textToReplace = ''
+                    for (const layer of config.layers) {
+                        textToReplace += `import { ${layer}Routes } from './routes/${layer}.routes.js'\n`
+                    }
+                    newLine = previousLine.replace('[[server.layers.import]]', textToReplace)
+                } 
+
+                if (varsToReplace[i] === 'server.routes.generate') {
+                    let textToReplace = ''
+                    for (const layer of config.layers) {
+                        textToReplace += `app.use('/${layer}', ${layer}Routes.init())\n`
+                    }
+                    newLine = previousLine.replace('[[server.routes.generate]]', textToReplace)
+                } 
+
+                if (key === varsToReplace[i]) {
                         newLine = previousLine.replace('[[' + key + ']]', config[key])
                 }
             }
+
         }
+
         await writeLine(newLine)
     } else {
         await writeLine(line)
