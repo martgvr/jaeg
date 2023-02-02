@@ -3,15 +3,15 @@ import fs from 'fs'
 
 await mkdirp('./generated')
 
-export async function clearFile() {
+export async function clearFile(filePath) {
     try {
         await fs.promises.writeFile('./generated/server.js', '');
     } catch (error) { console.log('Error! Algo salió mal', error) }
 }
 
-export async function readFile() {
+export async function readFile(filePath) {
     try {
-        const data = await fs.promises.readFile('./templates/server.template.js', { encoding: 'utf8' });
+        const data = await fs.promises.readFile('./templates/server.js', { encoding: 'utf8' });
         const splittedData = data.split('\n')
         return splittedData
     } catch (error) {

@@ -7,6 +7,13 @@ const config = { PORT: 8080, mode: 'cluster', layers: ['carts', 'products', 'use
 
 const fileContent = await readFile()
 
+// HACER FUNCIÓN QUE RECONOZCA TODOS LOS ARCHICOS Y CARPETAS DEL TEMPLATE
+// Y LOS CREE CON LOS MISMOS NOMBRES PERO VACÍOS
+// SACAR LAS EXTENSIONES .TEMPLATE.JS
+
+// LA FUNCIÓN DEL GENERADOR VA A SER BUSCAR EL ARCHIVO EN BLANCO GENERADO
+// Y REESCRIBIR EL CONTENIDO DEL TEMPLATE REEMPLAZANDO LAS VARIABLES
+
 for (const line of fileContent) {
     const regex = /\[\[(.*?)\]\]/g
     const lineMatch = line.match(regex)

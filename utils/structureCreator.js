@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { mkdirp } from 'mkdirp'
 
 const rootPath = '../templates'
 
@@ -15,12 +16,20 @@ function getDirectories(rootPath) {
     return directories
 }
 
-const files = getFiles(rootPath)
-const directories = getDirectories(rootPath)
-
 export function cloneTemplate() {
+    const files = getFiles(rootPath)
+    const directories = getDirectories(rootPath)
+
     if (!fs.existsSync('../generated')) {
-        fs.mkdir('../generated', (error) => error && console.log('Error al crear directorio base', error))
+        fs.mkdir('../generated', (e) => e && console.log(e))
+    }
+
+    for (const directory of directories) {
+        try {
+            mkdirp('../generated/' + path.basename(directory))
+          } catch (err) {
+            console.error(err);
+          }
     }
 
     for (const file of files) {
