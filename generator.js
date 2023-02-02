@@ -1,5 +1,5 @@
-import { readFile, writeLine, clearFile } from './fileManage.js'
-import { syntaxGenerate } from './syntaxGenerator.js'
+import { readFile, writeLine, clearFile } from './utils/fileManage.js'
+import { syntaxGenerate } from './utils/syntaxGenerator.js'
 
 clearFile()
 
