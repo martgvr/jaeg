@@ -1,18 +1,16 @@
 import { readFile, writeLine, clearFile } from './utils/fileManage.js'
 import { syntaxGenerate } from './utils/syntaxGenerator.js'
+import { cloneTemplate } from './utils/structureCreator.js'
 
 clearFile()
+cloneTemplate()
 
 const config = { PORT: 8080, mode: 'cluster', layers: ['carts', 'products', 'users'] }
 
 const fileContent = await readFile()
 
-// HACER FUNCIÓN QUE RECONOZCA TODOS LOS ARCHICOS Y CARPETAS DEL TEMPLATE
-// Y LOS CREE CON LOS MISMOS NOMBRES PERO VACÍOS
-// SACAR LAS EXTENSIONES .TEMPLATE.JS
-
-// LA FUNCIÓN DEL GENERADOR VA A SER BUSCAR EL ARCHIVO EN BLANCO GENERADO
-// Y REESCRIBIR EL CONTENIDO DEL TEMPLATE REEMPLAZANDO LAS VARIABLES
+// the generator will look for each blank file
+// to rewrite its content replacing variables
 
 for (const line of fileContent) {
     const regex = /\[\[(.*?)\]\]/g

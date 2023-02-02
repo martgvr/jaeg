@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { mkdirp } from 'mkdirp'
 
-const rootPath = '../templates'
+const rootPath = './templates'
 
 function getFiles(rootPath) {
     const isFile = (input) => { return fs.lstatSync(input).isFile() }
@@ -20,13 +20,13 @@ export function cloneTemplate() {
     const files = getFiles(rootPath)
     const directories = getDirectories(rootPath)
 
-    if (!fs.existsSync('../generated')) {
-        fs.mkdir('../generated', (e) => e && console.log(e))
+    if (!fs.existsSync('./generated')) {
+        fs.mkdir('./generated', (e) => e && console.log(e))
     }
 
     for (const directory of directories) {
         try {
-            mkdirp('../generated/' + path.basename(directory))
+            mkdirp('./generated/' + path.basename(directory))
           } catch (err) {
             console.error(err);
           }
@@ -34,13 +34,9 @@ export function cloneTemplate() {
 
     for (const file of files) {
         try {
-            fs.writeFileSync('../generated/' + path.basename(file), '');
+            fs.writeFileSync('./generated/' + path.basename(file), '');
           } catch (err) {
             console.error(err);
           }
     }
 }
-
-cloneTemplate()
-
-
