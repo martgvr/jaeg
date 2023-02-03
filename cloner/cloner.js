@@ -1,17 +1,20 @@
 import fs from 'fs'
 import path from 'path'
+import { mkdirp } from 'mkdirp'
 
 function getFiles(dir) {
-    const isFile = (input) => { return fs.lstatSync(input).isFile() }
+    const isFile = (input) => fs.lstatSync(input).isFile()
     const files = fs.readdirSync(dir).map(fileName => path.join(dir, fileName)).filter(isFile)
     return files
 }
 
 function getDirectories(dir) {
-    const isDirectory = (input) => { return fs.lstatSync(input).isDirectory() }
+    const isDirectory = (input) => fs.lstatSync(input).isDirectory()
     const directories = fs.readdirSync(dir).map(fileName => path.join(dir, fileName)).filter(isDirectory)
     return directories
 }
+
+const rootPath = './templates'
 
 function getCompleteTree(dir) {
     let completeDirectory = getDirectories(rootPath)
@@ -22,7 +25,15 @@ function getCompleteTree(dir) {
     return completeDirectory
 }
 
-const rootPath = './templates'
-const completeTree = getCompleteTree(rootPath)
+export function createCompleteTree() {
+    const creationPath = './generated'
+    const completeTree = getCompleteTree(rootPath)
 
-console.log(getFiles(completeTree[0]))
+    if (!fs.existsSync(creationPath)) mkdirp(creationPath)
+
+    for (const directory of completeTree) {
+        mkdirp(creationPath + '/' + directory)
+    }
+}
+
+createCompleteTree()
