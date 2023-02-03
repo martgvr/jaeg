@@ -2,13 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { mkdirp } from 'mkdirp'
 
-import { getFiles, getCompleteTree } from './utils/fileSystem.js'
-
-const config = { 
-    PORT: 8080, 
-    mode: 'cluster', 
-    layers: ['carts', 'products', 'users'] 
-}
+import { getFiles, getCompleteTree } from './utils/fileManager.js'
+import { variableReplacer } from './utils/variableReplacer.js'
 
 const templatePath = './templates'
 const creationPath = './generated'
@@ -26,7 +21,8 @@ async function createCompleteTree() {
         if (checkFiles.length !== 0) {
             for (const file of checkFiles) {
                 // ACA ENTRA LA FUNCIÓN DE REEMPLAZO DE VARIABLES Y ESCRITURA
-                fs.writeFileSync(directoryToCreate + '/' + path.basename(file), '');
+                variableReplacer(file)
+                // fs.writeFileSync(directoryToCreate + '/' + path.basename(file), '');
             }
         }
     }

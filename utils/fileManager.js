@@ -6,13 +6,13 @@ await mkdirp('./generated')
 
 export async function clearFile(filePath) {
     try {
-        await fs.promises.writeFile('./generated/server.js', '');
+        await fs.promises.writeFile(filePath, '');
     } catch (error) { console.log('Error! Algo salió mal', error) }
 }
 
 export async function readFile(filePath) {
     try {
-        const data = await fs.promises.readFile('./templates/server.js', { encoding: 'utf8' });
+        const data = await fs.promises.readFile(filePath, { encoding: 'utf8' });
         const splittedData = data.split('\n')
         return splittedData
     } catch (error) {
@@ -20,10 +20,10 @@ export async function readFile(filePath) {
     }
 }
 
-export async function writeLine(line) {
+export async function writeLine(filePath, line) {
     try {
-        const fileRead = await fs.promises.readFile('./generated/server.js', 'utf-8');
-        await fs.promises.writeFile('./generated/server.js', fileRead + (fileRead == '' ? line : '\n' + line));
+        const fileRead = await fs.promises.readFile(filePath, 'utf-8');
+        await fs.promises.writeFile(filePath, fileRead + (fileRead == '' ? line : '\n' + line));
     } catch (error) { console.log('Error! Algo salió mal', error) }
 }
 
