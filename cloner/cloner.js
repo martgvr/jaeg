@@ -16,7 +16,7 @@ function getDirectories(dir) {
 
 function getCompleteTree(dir) {
     let completeDirectory = getDirectories(dir)
-    completeDirectory.push('templates')
+    completeDirectory.push(dir.replace('./', ''))
 
     for (const directory of completeDirectory) {
         const directorieCheck = getDirectories(directory)
@@ -30,15 +30,11 @@ const creationPath = './generated'
 
 export async function createCompleteTree() {
     let completeTree = getCompleteTree(templatePath)
-
     if (!fs.existsSync(creationPath)) await mkdirp(creationPath)
     
     for (const directory of completeTree) {
-        const directoryToCreate = creationPath + directory.replace('templates', '')
-
-        if (directory !== 'templates') {
-            await mkdirp(directoryToCreate)
-        }
+        const directoryToCreate = creationPath + directory.replace(templatePath.replace('./', ''), '')
+        directory !== 'templates' && await mkdirp(directoryToCreate)
         
         const checkFiles = getFiles(directory)
 
