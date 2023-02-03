@@ -1,39 +1,35 @@
-import { readFile, writeLine, clearFile } from './utils/fileManage.js'
-import { syntaxGenerate } from './utils/syntaxGenerator.js'
-import { cloneTemplate } from './utils/structureCreator.js'
+import fs from 'fs'
+import path from 'path'
+import { mkdirp } from 'mkdirp'
 
-clearFile()
-cloneTemplate()
+import { getFiles, getCompleteTree } from './utils/fileSystem.js'
 
-const config = { PORT: 8080, mode: 'cluster', layers: ['carts', 'products', 'users'] }
+const config = { 
+    PORT: 8080, 
+    mode: 'cluster', 
+    layers: ['carts', 'products', 'users'] 
+}
 
-const fileContent = await readFile()
+const templatePath = './templates'
+const creationPath = './generated'
 
-// the generator will look for each blank file
-// to rewrite its content replacing variables
+async function createCompleteTree() {
+    let completeTree = getCompleteTree(templatePath)
+    if (!fs.existsSync(creationPath)) await mkdirp(creationPath)
+    
+    for (const directory of completeTree) {
+        const directoryToCreate = creationPath + directory.replace(templatePath.replace('./', ''), '')
+        directory !== 'templates' && await mkdirp(directoryToCreate)
+        
+        const checkFiles = getFiles(directory)
 
-for (const line of fileContent) {
-    const regex = /\[\[(.*?)\]\]/g
-    const lineMatch = line.match(regex)
-
-    if (lineMatch !== null) {
-        let varsToReplace = []
-        for (const variable of lineMatch) varsToReplace.push(variable.replace(regex, '$1'))
-
-        let previousLine, newLine
-
-        for (let i = 0; i < varsToReplace.length; i++) {
-            previousLine = i === 0 ? line : newLine
-
-            for (const key in config) {
-                if (varsToReplace[i] === 'server.layers.import') { newLine = previousLine.replace('[['+ varsToReplace[i] + ']]', syntaxGenerate(varsToReplace[i], config.layers)) } 
-                if (varsToReplace[i] === 'server.routes.generate') { newLine = previousLine.replace('[['+ varsToReplace[i] + ']]', syntaxGenerate(varsToReplace[i], config.layers)) } 
-                if (key === varsToReplace[i]) { newLine = previousLine.replace('[[' + key + ']]', config[key]) }
+        if (checkFiles.length !== 0) {
+            for (const file of checkFiles) {
+                // ACA ENTRA LA FUNCIÓN DE REEMPLAZO DE VARIABLES Y ESCRITURA
+                fs.writeFileSync(directoryToCreate + '/' + path.basename(file), '');
             }
         }
-        
-        await writeLine(newLine)
-    } else {
-        await writeLine(line)
     }
 }
+
+createCompleteTree()
