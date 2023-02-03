@@ -14,10 +14,10 @@ function getDirectories(dir) {
     return directories
 }
 
-const rootPath = './templates'
-
 function getCompleteTree(dir) {
-    let completeDirectory = getDirectories(rootPath)
+    let completeDirectory = getDirectories(dir)
+    completeDirectory.push('templates')
+
     for (const directory of completeDirectory) {
         const directorieCheck = getDirectories(directory)
         directorieCheck.length !== 0 && directorieCheck.forEach(dir => completeDirectory.push(dir))
@@ -25,14 +25,29 @@ function getCompleteTree(dir) {
     return completeDirectory
 }
 
-export function createCompleteTree() {
-    const creationPath = './generated'
-    const completeTree = getCompleteTree(rootPath)
+const templatePath = './templates'
+const creationPath = './generated'
 
-    if (!fs.existsSync(creationPath)) mkdirp(creationPath)
+export async function createCompleteTree() {
+    let completeTree = getCompleteTree(templatePath)
 
+    if (!fs.existsSync(creationPath)) await mkdirp(creationPath)
+    
     for (const directory of completeTree) {
-        mkdirp(creationPath + '/' + directory)
+        const directoryToCreate = creationPath + directory.replace('templates', '')
+
+        if (directory !== 'templates') {
+            await mkdirp(directoryToCreate)
+        }
+        
+        const checkFiles = getFiles(directory)
+
+        if (checkFiles.length !== 0) {
+            for (const file of checkFiles) {
+                // ACA ENTRA LA FUNCIÓN DE REEMPLAZO DE VARIABLES Y ESCRITURA
+                fs.writeFileSync(directoryToCreate + '/' + path.basename(file), '');
+            }
+        }
     }
 }
 
